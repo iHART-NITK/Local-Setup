@@ -3,7 +3,7 @@
 echo "make migrations"
 python ihart_backend/manage.py makemigrations
 
-echo "migrate"  
+echo "migrate"
 python ihart_backend/manage.py migrate
 
 echo "Starting server"

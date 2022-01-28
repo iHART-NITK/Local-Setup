@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: frontend
+    restart: always
+    command: ["./wait-for-it.sh", "backend:8000", "--", "sh", "./frontend.sh"]
+    volumes:
+      - data-volume:/var/lib/frontend/data
+    ports:
+      - 7357:7357
+    depends_on:
+    - backend
+      
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: backend
+    restart: always
+    command: ["./wait-for-it.sh","ihartdb:3306", "--", "sh", "./backend.sh"]
+    volumes:
+      - data-volume:/var/lib/backend/data
+    ports:
+      - 8000:8000
+    depends_on:
+      - ihartdb
+
+  ihartdb:
+    container_name: ihartdb
+    image: mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ihartdb
+      MYSQL_DATABASE: ihartdb
+      MYSQL_USER: ihartdb
+      MYSQL_PASSWORD: ihartdb
+
+volumes:
+  data-volume:
+  

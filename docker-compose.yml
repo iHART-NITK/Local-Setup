@@ -1,12 +1,9 @@
 version: '3.8'
 services:
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
+    build: ./frontend
     container_name: frontend
     restart: always
-    command: ["./wait-for-it.sh", "backend:8000", "--", "sh", "./frontend.sh"]
     volumes:
       - data-volume:/var/lib/frontend/data
     ports:
@@ -15,14 +12,11 @@ services:
     - backend
       
   backend:
-    build: 
-      context: .
-      dockerfile: Dockerfile.backend
+    build: ./backend
     container_name: backend
     restart: always
-    command: ["./wait-for-it.sh","ihartdb:3306", "--", "sh", "./backend.sh"]
     volumes:
-      - data-volume:/var/lib/backend/data
+      - data-volume:/var/lib/frontend/data
     ports:
       - 8000:8000
     depends_on:

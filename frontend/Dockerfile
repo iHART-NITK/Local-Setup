@@ -35,11 +35,11 @@ RUN sudo apt-get update && \
     /app/flutter/bin/flutter channel master && \
     /app/flutter/bin/flutter upgrade
 
-COPY ./frontend/pubspec.yaml /app/
+COPY pubspec.yaml /app/
 
 RUN /app/flutter/bin/flutter pub get
 
-COPY ./frontend/ /app/
+COPY . /app/
 
 RUN sudo touch /app/ios/Flutter/flutter_export_environment.sh && \
     sudo chown -R $(whoami) /app/ios/Flutter/flutter_export_environment.sh && \
@@ -64,9 +64,7 @@ RUN sudo touch /app/ios/Flutter/flutter_export_environment.sh && \
     sudo touch /app/lib/generated_plugin_registrant.dart && \
     sudo chown -R $(whoami) /app/lib/generated_plugin_registrant.dart
 
-CMD tail -f /dev/null
-
-COPY ./wait-for-it.sh /app/
-COPY ./frontend.sh /app/
 RUN sudo chmod +x wait-for-it.sh
 RUN sudo chmod +x frontend.sh
+
+CMD ["./wait-for-it.sh", "backend:8000", "--", "sh", "./frontend.sh"]
